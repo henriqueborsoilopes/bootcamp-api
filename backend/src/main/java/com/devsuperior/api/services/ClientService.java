@@ -1,5 +1,7 @@
 package com.devsuperior.api.services;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,6 +21,13 @@ public class ClientService {
 	public Page<Client> findAllPaged(PageRequest pageRequest) {
 		Page<Client> clients = clientRepository.findAll(pageRequest);
 		return clients;
+	}
+
+	@Transactional(readOnly = true)
+	public Client findById(Long id) {
+		Optional<Client> optional = clientRepository.findById(id);
+		Client client = optional.get();
+		return client;
 	}
 
 }
