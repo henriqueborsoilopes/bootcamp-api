@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devsuperior.api.dtos.ClientDTO;
 import com.devsuperior.api.entities.Client;
 import com.devsuperior.api.repositories.ClientRepository;
 
@@ -18,37 +19,43 @@ public class ClientService {
 	private ClientRepository clientRepository;
 	
 	@Transactional(readOnly = true)
-	public Page<Client> findAllPaged(PageRequest pageRequest) {
+	public Page<ClientDTO> findAllPaged(PageRequest pageRequest) {
 		Page<Client> clients = clientRepository.findAll(pageRequest);
-		return clients;
+		return clients.map(x -> new ClientDTO(x));
 	}
 
 	@Transactional(readOnly = true)
-	public Client findById(Long id) {
+	public ClientDTO findById(Long id) {
 		Optional<Client> optional = clientRepository.findById(id);
 		Client client = optional.get();
-		return client;
+		return new ClientDTO(client);
 	}
 	
 	@Transactional
-	public Client insert(Client newClient) {
+	public ClientDTO insert(ClientDTO newClientDTO) {
+		Client newClient = new Client();
+		DTOToEntity(newClient, newClientDTO);
 		newClient = clientRepository.save(newClient);
-		return newClient;
+		return new ClientDTO(newClient);
 	}
 	
 	@Transactional
-	public Client update(Long id, Client newClient) {
+	public ClientDTO update(Long id, ClientDTO newClientDTO) {
 		Client client = clientRepository.getReferenceById(id);
-		client.setName(newClient.getName());
-		client.setCpf(newClient.getCpf());
-		client.setIncome(newClient.getIncome());
-		client.setBirthDate(newClient.getBirthDate());
-		client.setChildren(newClient.getChildren());
+		DTOToEntity(client, newClientDTO);
 		client = clientRepository.save(client);
-		return client;
+		return new ClientDTO(client);
 	}
 
 	public void deleteById(Long id) {
 		clientRepository.deleteById(id);		
+	}
+	
+	private void DTOToEntity(Client newClient, ClientDTO newClientDTO) {
+		newClient.setName(newClientDTO.getName());
+		newClient.setCpf(newClientDTO.getCpf());
+		newClient.setIncome(newClientDTO.getIncome());
+		newClient.setBirthDate(newClientDTO.getBirthDate());
+		newClient.setChildren(newClientDTO.getChildren());
 	}
 }

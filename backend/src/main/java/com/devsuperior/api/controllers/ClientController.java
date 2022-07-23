@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.devsuperior.api.entities.Client;
+import com.devsuperior.api.dtos.ClientDTO;
 import com.devsuperior.api.services.ClientService;
 
 @RestController
@@ -29,34 +29,34 @@ public class ClientController {
 	private ClientService clientService;
 	
 	@GetMapping
-	public ResponseEntity<Page<Client>> findAllPaged(
+	public ResponseEntity<Page<ClientDTO>> findAllPaged(
 			@RequestParam(value = "page", defaultValue = "0") Integer page,
 			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
 			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
 			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy
 			){
 		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
-		Page<Client> clients = clientService.findAllPaged(pageRequest);
+		Page<ClientDTO> clients = clientService.findAllPaged(pageRequest);
 		return ResponseEntity.ok().body(clients);
 	}
 	
 	@GetMapping(value ="/{id}")
-	public ResponseEntity<Client> findById(@PathVariable Long id) {
-		Client client = clientService.findById(id);
+	public ResponseEntity<ClientDTO> findById(@PathVariable Long id) {
+		ClientDTO client = clientService.findById(id);
 		return ResponseEntity.ok().body(client);
 	}
 	
 	@PostMapping
-	public ResponseEntity<Client> insert(@RequestBody Client newClient) {
-		newClient = clientService.insert(newClient);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newClient.getId()).toUri();
-		return ResponseEntity.created(uri).body(newClient);
+	public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO newClientDTO) {
+		newClientDTO = clientService.insert(newClientDTO);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newClientDTO.getId()).toUri();
+		return ResponseEntity.created(uri).body(newClientDTO);
 	}
 	
 	@PutMapping(value = "{id}")
-	public ResponseEntity<Client> update(@PathVariable Long id, @RequestBody Client newClient) {
-		newClient = clientService.update(id, newClient);
-		return ResponseEntity.ok().body(newClient);
+	public ResponseEntity<ClientDTO> update(@PathVariable Long id, @RequestBody ClientDTO newClientDTO) {
+		newClientDTO = clientService.update(id, newClientDTO);
+		return ResponseEntity.ok().body(newClientDTO);
 	}
 	
 	@DeleteMapping(value ="/{id}")
