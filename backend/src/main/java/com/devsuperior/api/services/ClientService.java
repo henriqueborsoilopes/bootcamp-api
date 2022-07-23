@@ -29,5 +29,10 @@ public class ClientService {
 		Client client = optional.get();
 		return client;
 	}
-
+	
+	@Transactional
+	public Client insert(Client newClient) {
+		newClient = clientRepository.save(newClient);
+		return newClient;
+	}
 }
