@@ -35,4 +35,16 @@ public class ClientService {
 		newClient = clientRepository.save(newClient);
 		return newClient;
 	}
+	
+	@Transactional
+	public Client update(Long id, Client newClient) {
+		Client client = clientRepository.getReferenceById(id);
+		client.setName(newClient.getName());
+		client.setCpf(newClient.getCpf());
+		client.setIncome(newClient.getIncome());
+		client.setBirthDate(newClient.getBirthDate());
+		client.setChildren(newClient.getChildren());
+		client = clientRepository.save(client);
+		return client;
+	}
 }
